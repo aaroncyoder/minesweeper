@@ -5,7 +5,8 @@
 GameButton::GameButton(QWidget *parent) :
     QPushButton(parent),
     flagged(false),
-    explodingMine(false)
+    explodingMine(false),
+    neighborMineCount(0)
 {
     connect(this, SIGNAL(clicked()), this, SLOT(handleLeftClick()));
     connect(this, SIGNAL(rightClicked()), this, SLOT(handleRightClick()));
@@ -29,9 +30,29 @@ void GameButton::handleLeftClick()
         this->setDisabled(true);
 
     if (explodingMine) {
-        this->setText("X");
+        this->setText(QString("X"));
         emit mineExploded();
+    } else {
+        displayMineCount();
     }
+}
+
+void GameButton::gameOverState()
+{
+    if (!isEnabled())
+        return;
+
+    if (explodingMine) {
+        this->setText("X");
+    } else {
+        if (neighborMineCount > 0)
+            this->setText(QString::number(neighborMineCount));
+        else
+            this->setText("");
+    }
+
+    this->setDisabled(true);
+
 }
 
 void GameButton::handleRightClick()
@@ -42,6 +63,19 @@ void GameButton::handleRightClick()
         this->setText("F");
 
     flagged = !flagged;
+}
+
+void GameButton::displayMineCount()
+{
+    if (neighborMineCount > 0)
+        this->setText(QString::number(neighborMineCount));
+    else if (neighborMineCount == 0)
+        emit clickAllNeighbors();
+}
+
+void GameButton::incNeighborMineCount()
+{
+    neighborMineCount++;
 }
 
 

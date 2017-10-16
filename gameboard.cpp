@@ -22,6 +22,7 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
     gridLayout->setSpacing(0);
 
     grid = new GameButton*[maxY * maxX];
+    Q_CHECK_PTR(grid);
 
     for (int y = 0; y < maxY; y++) {
         for (int x = 0; x < maxX; x++) {
@@ -31,6 +32,8 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
             connect(button, SIGNAL(mineExploded()), this, SLOT(clearBoard()));
         }
     }
+
+    connectAllNeighbors();
 
     setLayout(gridLayout);
     setFixedSize(QSize(maxX * buttonSize, maxY * buttonSize));
@@ -43,8 +46,10 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
     for(int i = 0; i < 20; ) {
         int x = rand() % maxX;
         int y = rand() % maxY;
-        if (addMine(x, y))
+        if (addMine(x, y)) {
             i++;
+            incrementAdjacentNeighbors(x, y);
+        }
     }
 }
 
@@ -52,7 +57,7 @@ void GameBoard::clearBoard()
 {
     for (int y = 0; y < maxY; y++) {
         for (int x = 0; x < maxX; x++) {
-            sendLeftClick(x, y);
+            getGrid(x, y)->gameOverState();
         }
     }
 
@@ -60,7 +65,7 @@ void GameBoard::clearBoard()
 
 void GameBoard::addButton(int x, int y, GameButton *button)
 {
-    if ((button == NULL) || (grid == NULL))
+    if (button == NULL)
         return;
 
     grid[y * maxX + x] = button;
@@ -68,14 +73,72 @@ void GameBoard::addButton(int x, int y, GameButton *button)
 
 bool GameBoard::addMine(int x, int y)
 {
-    if (grid != NULL)
-        return grid[y * maxX + x]->makeExplodable();
-    else
-        return false;
+    return getGrid(x, y)->makeExplodable();
 }
 
-void GameBoard::sendLeftClick(int x, int y)
+void GameBoard::incrementAdjacentNeighbors(int x, int y)
 {
-    if (grid != NULL)
-        grid[y * maxX + x]->handleLeftClick();
+    int xLeft = x - 1;
+    int xRight = x + 1;
+    int yUp = y - 1;
+    int yDown = y + 1;
+
+    if (yUp >= 0)
+        getGrid(x, yUp)->incNeighborMineCount();
+    if (yDown < maxY)
+        getGrid(x, yDown)->incNeighborMineCount();
+
+    if (xLeft >= 0) {
+        getGrid(xLeft, y)->incNeighborMineCount();
+        if (yUp >= 0)
+            getGrid(xLeft, yUp)->incNeighborMineCount();
+        if (yDown < maxY)
+            getGrid(xLeft, yDown)->incNeighborMineCount();
+    }
+    if (xRight < maxX) {
+        getGrid(xRight, y)->incNeighborMineCount();
+        if (yUp >= 0)
+            getGrid(xRight, yUp)->incNeighborMineCount();
+        if (yDown < maxY)
+            getGrid(xRight, yDown)->incNeighborMineCount();
+    }
+}
+
+void GameBoard::connectAllNeighbors()
+{
+    for (int y = 0; y < maxY; y++) {
+        for (int x = 0; x < maxX; x++) {
+            GameButton *button = getGrid(x, y);
+            int xLeft = x - 1;
+            int xRight = x + 1;
+            int yUp = y - 1;
+            int yDown = y + 1;
+
+            if (yUp >= 0)
+                connect(button, SIGNAL(clickAllNeighbors()), getGrid(x, yUp), SLOT(handleLeftClick()));
+            if (yDown < maxY)
+                connect(button, SIGNAL(clickAllNeighbors()), getGrid(x, yDown), SLOT(handleLeftClick()));
+
+            if (xLeft >= 0) {
+                connect(button, SIGNAL(clickAllNeighbors()), getGrid(xLeft, y), SLOT(handleLeftClick()));
+                if (yUp >= 0)
+                    connect(button, SIGNAL(clickAllNeighbors()), getGrid(xLeft, yUp), SLOT(handleLeftClick()));
+                if (yDown < maxY)
+                    connect(button, SIGNAL(clickAllNeighbors()), getGrid(xLeft, yDown), SLOT(handleLeftClick()));
+            }
+            if (xRight < maxX) {
+                connect(button, SIGNAL(clickAllNeighbors()), getGrid(xRight, y), SLOT(handleLeftClick()));
+                if (yUp >= 0)
+                    connect(button, SIGNAL(clickAllNeighbors()), getGrid(xRight, yUp), SLOT(handleLeftClick()));
+                if (yDown < maxY)
+                    connect(button, SIGNAL(clickAllNeighbors()), getGrid(xRight, yDown), SLOT(handleLeftClick()));
+            }
+
+        }
+    }
+}
+
+GameButton *GameBoard::getGrid(int x, int y)
+{
+    return grid[y * maxX + x];
 }

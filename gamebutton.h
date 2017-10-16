@@ -9,21 +9,26 @@ class GameButton : public QPushButton
 public:
     explicit GameButton(QWidget *parent = 0);
     bool makeExplodable();
-    
+    void displayMineCount();
+    void incNeighborMineCount();
+
 signals:
     void rightClicked();
     void mineExploded();
+    void clickAllNeighbors();
 
 private slots:
     void mousePressEvent(QMouseEvent *e);
 
 public slots:
     void handleLeftClick();
+    void gameOverState();
     void handleRightClick();
 
 private:
     bool flagged;
     bool explodingMine;
+    int neighborMineCount;
 };
 
 #endif // GAMEBUTTON_H
