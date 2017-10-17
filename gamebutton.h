@@ -29,6 +29,7 @@ private:
     bool flagged;
     bool explodingMine;
     int neighborMineCount;
+    bool gameOver;
 };
 
 #endif // GAMEBUTTON_H

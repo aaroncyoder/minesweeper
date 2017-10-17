@@ -2,4 +2,8 @@
     <qresource prefix="/resources">
         <file>gameboardstyle.qss</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>mine_red.png</file>
+        <file>mine_transparent.png</file>
+    </qresource>
 </RCC>

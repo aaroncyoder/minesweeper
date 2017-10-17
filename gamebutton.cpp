@@ -6,6 +6,7 @@ GameButton::GameButton(QWidget *parent) :
     QPushButton(parent),
     flagged(false),
     explodingMine(false),
+    gameOver(false),
     neighborMineCount(0)
 {
     connect(this, SIGNAL(clicked()), this, SLOT(handleLeftClick()));
@@ -23,7 +24,7 @@ bool GameButton::makeExplodable()
 
 void GameButton::handleLeftClick()
 {
-    if (!isEnabled())
+    if (!isEnabled() || gameOver)
         return;
 
     if (!flagged) {
@@ -31,7 +32,6 @@ void GameButton::handleLeftClick()
 
         if (explodingMine) {
             this->setObjectName("explodedMine");
-            this->setText(QString("X"));
             style()->unpolish(this);
             style()->polish(this);
             emit mineExploded();
@@ -43,16 +43,24 @@ void GameButton::handleLeftClick()
 
 void GameButton::gameOverState()
 {
-    if (!isEnabled())
+    gameOver = true;
+
+    if (!isEnabled()) {
         return;
+    }
 
     if (explodingMine) {
-        this->setText("X");
+        this->setDisabled(true);
+        this->setObjectName("hiddenMine");
+        style()->unpolish(this);
+        style()->polish(this);
     }
 }
 
 void GameButton::handleRightClick()
 {
+    if (gameOver) return;
+
     if (flagged)
         this->setText("");
     else

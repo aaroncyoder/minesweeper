@@ -22,14 +22,18 @@ GameButton:pressed {
 GameButton:disabled {
     background-color: rgb(160, 160, 160);
     border-style: inset;
-    border-width: 1px;
+    border-width: 2px;
     border-radius: 0px;
-    padding: 1px;
+    padding: 0px;
     margin: 0px;
 }
 
 GameButton#explodedMine {
-    color: red;
+    image: url(:/images/mine_red.png)
+}
+
+GameButton#hiddenMine {
+    image: url(:/images/mine_transparent.png)
 }
 
 GameButton#mineCount1 {
