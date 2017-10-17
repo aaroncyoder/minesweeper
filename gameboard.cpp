@@ -39,10 +39,6 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
     setLayout(gridLayout);
     setFixedSize(QSize(maxX * (buttonSize+2), maxY * (buttonSize+2)));
 
-    if (parent != NULL) {
-        parent->setFixedSize(QSize(maxX * (buttonSize+2), maxY * (buttonSize+2)));
-    }
-
     srand(time(NULL));
     for(int i = 0; i < 20; ) {
         int x = rand() % maxX;
