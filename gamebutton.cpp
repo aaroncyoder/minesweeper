@@ -30,7 +30,10 @@ void GameButton::handleLeftClick()
         this->setDisabled(true);
 
         if (explodingMine) {
+            this->setObjectName("explodedMine");
             this->setText(QString("X"));
+            style()->unpolish(this);
+            style()->polish(this);
             emit mineExploded();
         } else {
             displayMineCount();
@@ -45,15 +48,7 @@ void GameButton::gameOverState()
 
     if (explodingMine) {
         this->setText("X");
-    } else {
-        if (neighborMineCount > 0)
-            this->setText(QString::number(neighborMineCount));
-        else
-            this->setText("");
     }
-
-    this->setDisabled(true);
-
 }
 
 void GameButton::handleRightClick()
@@ -68,8 +63,15 @@ void GameButton::handleRightClick()
 
 void GameButton::displayMineCount()
 {
-    if (neighborMineCount > 0)
+    if (neighborMineCount > 0) {
+        QString objName = "mineCount";
+        objName.append(QString::number(neighborMineCount));
+        this->setObjectName(objName);
+
         this->setText(QString::number(neighborMineCount));
+        style()->unpolish(this);
+        style()->polish(this);
+    }
     else if (neighborMineCount == 0)
         emit clickAllNeighbors();
 }

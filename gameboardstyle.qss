@@ -1,5 +1,6 @@
 GameButton {
     background-color: rgb(128, 128, 128);
+    color: blue;
     border-style: outset;
     border-width: 2px;
     border-radius: 0px;
@@ -21,8 +22,44 @@ GameButton:pressed {
 GameButton:disabled {
     background-color: rgb(160, 160, 160);
     border-style: inset;
-    border-width: 0px;
+    border-width: 1px;
     border-radius: 0px;
-    padding: 2px;
+    padding: 1px;
     margin: 0px;
+}
+
+GameButton#explodedMine {
+    color: red;
+}
+
+GameButton#mineCount1 {
+    color: blue;
+}
+
+GameButton#mineCount2 {
+    color: green;
+}
+
+GameButton#mineCount3 {
+    color: red;
+}
+
+GameButton#mineCount4 {
+    color: red;
+}
+
+GameButton#mineCount5 {
+    color: red;
+}
+
+GameButton#mineCount6 {
+    color: red;
+}
+
+GameButton#mineCount7 {
+    color: red;
+}
+
+GameButton#mineCount8 {
+    color: red;
 }
