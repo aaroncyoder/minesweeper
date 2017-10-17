@@ -6,5 +6,7 @@
         <file>mine_red.png</file>
         <file>mine_transparent.png</file>
         <file>flag.png</file>
+        <file>flag_wrong.png</file>
+        <file>mine_correct.png</file>
     </qresource>
 </RCC>

@@ -49,12 +49,21 @@ void GameButton::gameOverState()
         return;
     }
 
-    if (explodingMine) {
+
+    if (explodingMine && !flagged) {
         this->setDisabled(true);
         this->setObjectName("hiddenMine");
-        style()->unpolish(this);
-        style()->polish(this);
+    } else if (!explodingMine && flagged) {
+        this->setDisabled(true);
+        this->setObjectName("incorrectFlag");
+    } else if (explodingMine && flagged) {
+        this->setDisabled(true);
+        this->setObjectName("correctMine");
     }
+
+    style()->unpolish(this);
+    style()->polish(this);
+
 }
 
 void GameButton::handleRightClick()

@@ -36,6 +36,14 @@ GameButton#hiddenMine {
     image: url(:/images/mine_transparent.png)
 }
 
+GameButton#correctMine {
+    image: url(:/images/mine_correct.png)
+}
+
+GameButton#incorrectFlag {
+    image: url(:/images/flag_wrong.png)
+}
+
 GameButton#flaggedMine {
     image: url(:/images/flag.png)
 }
