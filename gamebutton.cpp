@@ -6,8 +6,8 @@ GameButton::GameButton(QWidget *parent) :
     QPushButton(parent),
     flagged(false),
     explodingMine(false),
-    gameOver(false),
-    neighborMineCount(0)
+    neighborMineCount(0),
+    gameOver(false)
 {
     connect(this, SIGNAL(clicked()), this, SLOT(handleLeftClick()));
     connect(this, SIGNAL(rightClicked()), this, SLOT(handleRightClick()));
@@ -61,10 +61,16 @@ void GameButton::handleRightClick()
 {
     if (gameOver) return;
 
-    if (flagged)
-        this->setText("");
-    else
-        this->setText("F");
+    if (flagged) {
+        this->setObjectName("unFlaggedMine");
+        style()->unpolish(this);
+        style()->polish(this);
+
+    } else {
+        this->setObjectName("flaggedMine");
+        style()->unpolish(this);
+        style()->polish(this);
+    }
 
     flagged = !flagged;
 }

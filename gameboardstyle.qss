@@ -36,6 +36,10 @@ GameButton#hiddenMine {
     image: url(:/images/mine_transparent.png)
 }
 
+GameButton#flaggedMine {
+    image: url(:/images/flag.png)
+}
+
 GameButton#mineCount1 {
     color: blue;
 }
