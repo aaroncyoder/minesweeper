@@ -26,14 +26,15 @@ void GameButton::handleLeftClick()
     if (!isEnabled())
         return;
 
-    if (!flagged)
+    if (!flagged) {
         this->setDisabled(true);
 
-    if (explodingMine) {
-        this->setText(QString("X"));
-        emit mineExploded();
-    } else {
-        displayMineCount();
+        if (explodingMine) {
+            this->setText(QString("X"));
+            emit mineExploded();
+        } else {
+            displayMineCount();
+        }
     }
 }
 

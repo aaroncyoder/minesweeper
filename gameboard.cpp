@@ -27,6 +27,7 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
     for (int y = 0; y < maxY; y++) {
         for (int x = 0; x < maxX; x++) {
             GameButton *button = new GameButton();
+            button->setFixedSize(buttonSize, buttonSize);
             gridLayout->addWidget(button, y, x);
             addButton(x, y, button);
             connect(button, SIGNAL(mineExploded()), this, SLOT(clearBoard()));
@@ -36,10 +37,10 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
     connectAllNeighbors();
 
     setLayout(gridLayout);
-    setFixedSize(QSize(maxX * buttonSize, maxY * buttonSize));
+    setFixedSize(QSize(maxX * (buttonSize+2), maxY * (buttonSize+2)));
 
     if (parent != NULL) {
-        parent->setFixedSize(QSize(maxX * buttonSize, maxY * buttonSize));
+        parent->setFixedSize(QSize(maxX * (buttonSize+2), maxY * (buttonSize+2)));
     }
 
     srand(time(NULL));
