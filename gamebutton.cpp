@@ -104,6 +104,16 @@ void GameButton::incNeighborMineCount()
     neighborMineCount++;
 }
 
+bool GameButton::unTouched()
+{
+    if (gameOver)
+        return true;
+    else if (flagged || !isEnabled())
+        return false;
+    else
+        return true;
+}
+
 
 void GameButton::mousePressEvent(QMouseEvent *e)
 {

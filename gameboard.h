@@ -9,7 +9,8 @@ class GameBoard : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GameBoard(int x, int y, QWidget *parent = 0);
+    explicit GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *parent = 0);
+    bool gameStarted();
 
 signals:
     

@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gameboard.cpp \
-    gamebutton.cpp
+    gamebutton.cpp \
+    gamesettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     gameboard.h \
-    gamebutton.h
+    gamebutton.h \
+    gamesettingsdialog.h
 
 RESOURCES += \
     resources.qrc

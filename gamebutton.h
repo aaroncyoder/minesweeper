@@ -11,6 +11,7 @@ public:
     bool makeExplodable();
     void displayMineCount();
     void incNeighborMineCount();
+    bool unTouched();
 
 signals:
     void rightClicked();

@@ -6,10 +6,10 @@
 #include "gameboard.h"
 #include "gamebutton.h"
 
-GameBoard::GameBoard(int x, int y, QWidget *parent) :
+GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *parent) :
     QWidget(parent),
-    maxX(std::max(2,x)),
-    maxY(std::max(2,y))
+    maxX(std::max(2,mineWidth)),
+    maxY(std::max(2,mineHeight))
 {
 
     QFile file(":/resources/gameboardstyle.qss");
@@ -37,10 +37,11 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
     connectAllNeighbors();
 
     setLayout(gridLayout);
-    setFixedSize(QSize(maxX * (buttonSize+2), maxY * (buttonSize+2)));
+    setFixedSize(gridLayout->minimumSize());
 
+    mineCount = std::min(mineCount, maxX*maxY);
     srand(time(NULL));
-    for(int i = 0; i < 20; ) {
+    for(int i = 0; i < mineCount; ) {
         int x = rand() % maxX;
         int y = rand() % maxY;
         if (addMine(x, y)) {
@@ -48,6 +49,18 @@ GameBoard::GameBoard(int x, int y, QWidget *parent) :
             incrementAdjacentNeighbors(x, y);
         }
     }
+}
+
+bool GameBoard::gameStarted()
+{
+    for (int y = 0; y < maxY; y++) {
+        for (int x = 0; x < maxX; x++) {
+            if (!getGrid(x, y)->unTouched())
+                return true;
+        }
+    }
+
+    return false;
 }
 
 void GameBoard::clearBoard()
