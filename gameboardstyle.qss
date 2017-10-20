@@ -79,3 +79,30 @@ GameButton#mineCount7 {
 GameButton#mineCount8 {
     color: red;
 }
+
+QPushButton#newGameButton {
+    background-color: rgb(158, 158, 158);
+    color: rgb(20, 20, 20);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 0px;
+    border-color: rgb(94, 94, 94);
+    font: bold 12px;
+    padding: 0px;
+    margin: 4px;
+}
+
+QPushButton:pressed#newGameButton {
+    background-color: rgb(100, 100, 100);
+    border-color: rgb(194, 194, 194);
+    border-style: inset;
+    border-width: 2px;
+    border-radius: 0px;
+    padding: 0px;
+    margin: 4px;
+}
+
+
+QLCDNumber {
+    color: red;
+}

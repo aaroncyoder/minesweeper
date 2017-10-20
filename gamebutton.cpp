@@ -82,6 +82,8 @@ void GameButton::handleRightClick()
     }
 
     flagged = !flagged;
+
+    emit mineMarked(flagged);
 }
 
 void GameButton::displayMineCount()
@@ -114,6 +116,15 @@ bool GameButton::unTouched()
         return true;
 }
 
+bool GameButton::winningState()
+{
+    if((flagged && explodingMine) || !isEnabled())
+        return true;
+    else
+        return false;
+
+}
+
 
 void GameButton::mousePressEvent(QMouseEvent *e)
 {
@@ -123,3 +134,4 @@ void GameButton::mousePressEvent(QMouseEvent *e)
 
     QPushButton::mousePressEvent(e);
 }
+

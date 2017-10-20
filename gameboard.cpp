@@ -9,7 +9,8 @@
 GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *parent) :
     QWidget(parent),
     maxX(std::max(2,mineWidth)),
-    maxY(std::max(2,mineHeight))
+    maxY(std::max(2,mineHeight)),
+    timer(NULL)
 {
 
     QFile file(":/resources/gameboardstyle.qss");
@@ -28,16 +29,13 @@ GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *pare
         for (int x = 0; x < maxX; x++) {
             GameButton *button = new GameButton();
             button->setFixedSize(buttonSize, buttonSize);
-            gridLayout->addWidget(button, y, x);
+            gridLayout->addWidget(button, y + 1, x);
             addButton(x, y, button);
             connect(button, SIGNAL(mineExploded()), this, SLOT(clearBoard()));
         }
     }
 
     connectAllNeighbors();
-
-    setLayout(gridLayout);
-    setFixedSize(gridLayout->minimumSize());
 
     mineCount = std::min(mineCount, maxX*maxY);
     srand(time(NULL));
@@ -49,6 +47,35 @@ GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *pare
             incrementAdjacentNeighbors(x, y);
         }
     }
+
+    mineCountLCD = new QLCDNumber(3);
+    mineCountLCD->display(mineCount);
+    mineCountLCD->setFixedSize(40, 40);
+    mineCountLCD->setSegmentStyle(QLCDNumber::Flat);
+    mineCountLCD->setContentsMargins(QMargins(0,0,0,4));
+
+    timeCountLCD = new QLCDNumber(3);
+    timeCountLCD->display(0);
+    timeCountLCD->setFixedSize(40, 40);
+    timeCountLCD->setSegmentStyle(QLCDNumber::Flat);
+    timeCountLCD->setContentsMargins(QMargins(0,0,0,4));
+
+
+    QPushButton *newGameButton = new QPushButton("New");
+    newGameButton->setFixedSize(40, 40);
+    newGameButton->setObjectName("newGameButton");
+    connect (newGameButton, SIGNAL(clicked()), parent, SLOT(startNewGame()));
+
+    QHBoxLayout *topLayout = new QHBoxLayout();
+    topLayout->addWidget(mineCountLCD);
+    topLayout->addStretch();
+    topLayout->addWidget(newGameButton);
+    topLayout->addStretch();
+    topLayout->addWidget(timeCountLCD);
+    gridLayout->addLayout(topLayout, 0, 0, 1, maxX);
+
+    setLayout(gridLayout);
+    setFixedSize(gridLayout->minimumSize());
 }
 
 bool GameBoard::gameStarted()
@@ -65,6 +92,8 @@ bool GameBoard::gameStarted()
 
 void GameBoard::clearBoard()
 {
+    timer->stop();
+
     for (int y = 0; y < maxY; y++) {
         for (int x = 0; x < maxX; x++) {
             getGrid(x, y)->gameOverState();
@@ -73,12 +102,49 @@ void GameBoard::clearBoard()
 
 }
 
+void GameBoard::decrementMineCounter(bool marked)
+{
+    if (marked)
+        mineCountLCD->display(mineCountLCD->value() - 1);
+    else
+        mineCountLCD->display(mineCountLCD->value() + 1);
+}
+
+void GameBoard::handleButtonClick()
+{
+    if (timer == NULL) {
+        timer = new QTimer;
+        connect(timer, SIGNAL(timeout()), this, SLOT(updateTimeCountLCD()));
+        timer->start(1000);
+    }
+
+    for (int y = 0; y < maxY; y++) {
+        for (int x = 0; x < maxX; x++) {
+            if (!getGrid(x, y)->winningState())
+                return;
+        }
+    }
+
+    timer->stop();
+    emit boardIsWinner();
+    clearBoard();
+}
+
+void GameBoard::updateTimeCountLCD()
+{
+    timeCountLCD->display(timeCountLCD->value() + 1);
+}
+
 void GameBoard::addButton(int x, int y, GameButton *button)
 {
     if (button == NULL)
         return;
 
     grid[y * maxX + x] = button;
+    connect(button, SIGNAL(mineMarked(bool)), this, SLOT(decrementMineCounter(bool)));
+    connect(button, SIGNAL(clicked()), this, SLOT(handleButtonClick()));
+    connect(button, SIGNAL(rightClicked()), this, SLOT(handleButtonClick()));
+
 }
 
 bool GameBoard::addMine(int x, int y)

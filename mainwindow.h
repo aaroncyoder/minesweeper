@@ -18,6 +18,7 @@ public:
     
 private slots:
     void startNewGame();
+    void youWinDialog();
     void gameSettingsDialog();
     void setMineWidth(int width) { mineWidth = width; }
     void setMineHeight(int height) { mineHeight = height; }

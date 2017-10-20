@@ -6,13 +6,12 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    gameBoard(NULL),
     mineWidth(10),
     mineHeight(10),
     mineCount(10)
 {
-    gameBoard = new GameBoard(mineWidth, mineHeight, mineCount, this);
-    setCentralWidget(gameBoard);
-
+    startNewGame();
     createActions();
     createMenus();
 
@@ -21,22 +20,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::startNewGame()
 {
-    if (gameBoard->gameStarted()) {
-        QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("MineSweeper"),
-                     tr("Current game board will be lost.\n"
-                        "Do you want to start a new game?"),
-                     QMessageBox::Yes | QMessageBox::No);
-        if (ret != QMessageBox::Yes) {
-            return;
+    if (gameBoard != NULL) {
+        if (gameBoard->gameStarted()) {
+            QMessageBox::StandardButton ret;
+            ret = QMessageBox::warning(this, tr("MineSweeper"),
+                                       tr("Current game board will be lost.\n"
+                                          "Do you want to start a new game?"),
+                                       QMessageBox::Yes | QMessageBox::No);
+            if (ret != QMessageBox::Yes) {
+                return;
+            }
         }
+
+        delete gameBoard;
     }
 
-    delete gameBoard;
     gameBoard = new GameBoard(mineWidth, mineHeight, mineCount, this);
     setCentralWidget(gameBoard);
 
+    connect(gameBoard, SIGNAL(boardIsWinner()), this, SLOT(youWinDialog()));
+}
 
+void MainWindow::youWinDialog()
+{
+    if (gameBoard->gameStarted()) {
+        QMessageBox::information(this, tr("MineSweeper"),
+                                   tr("You win!"));
+    }
 }
 
 void MainWindow::gameSettingsDialog()

@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class GameButton;
+class QLCDNumber;
 
 class GameBoard : public QWidget
 {
@@ -13,9 +14,13 @@ public:
     bool gameStarted();
 
 signals:
-    
+    void boardIsWinner();
+
 public slots:
     void clearBoard();
+    void decrementMineCounter(bool marked);
+    void handleButtonClick();
+    void updateTimeCountLCD();
 
 private:
     GameButton **grid;
@@ -27,7 +32,9 @@ private:
     int maxX;
     int maxY;
     static const int buttonSize = 20;
-    
+    QLCDNumber *mineCountLCD;
+    QLCDNumber *timeCountLCD;
+    QTimer *timer;
 };
 
 #endif // GAMEBOARD_H

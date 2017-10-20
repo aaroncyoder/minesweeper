@@ -12,10 +12,12 @@ public:
     void displayMineCount();
     void incNeighborMineCount();
     bool unTouched();
+    bool winningState();
 
 signals:
     void rightClicked();
     void mineExploded();
+    void mineMarked(bool flagged);
     void clickAllNeighbors();
 
 private slots:
