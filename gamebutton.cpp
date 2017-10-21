@@ -89,7 +89,7 @@ void GameButton::animateButton(int right, int bottom, int duration)
         animation->setDuration(duration);
         animation->setStartValue(QRect(right, bottom, this->size().width(), this->size().height()));
         animation->setEndValue(this->geometry());
-        animation->setEasingCurve(QEasingCurve::OutElastic);
+        animation->setEasingCurve(QEasingCurve::OutBack);
         animation->start();
     }
 }
