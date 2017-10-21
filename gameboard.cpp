@@ -10,7 +10,9 @@ GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *pare
     QWidget(parent),
     maxX(std::max(2,mineWidth)),
     maxY(std::max(2,mineHeight)),
-    timer(NULL)
+    mineCount(mineCount),
+    timer(NULL),
+    gameOverState(false)
 {
 
     QFile file(":/resources/gameboardstyle.qss");
@@ -37,29 +39,20 @@ GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *pare
 
     connectAllNeighbors();
 
-    mineCount = std::min(mineCount, maxX*maxY);
-    srand(time(NULL));
-    for(int i = 0; i < mineCount; ) {
-        int x = rand() % maxX;
-        int y = rand() % maxY;
-        if (addMine(x, y)) {
-            i++;
-            incrementAdjacentNeighbors(x, y);
-        }
-    }
-
     mineCountLCD = new QLCDNumber(3);
-    mineCountLCD->display(mineCount);
     mineCountLCD->setFixedSize(40, 40);
     mineCountLCD->setSegmentStyle(QLCDNumber::Flat);
     mineCountLCD->setContentsMargins(QMargins(0,0,0,4));
 
     timeCountLCD = new QLCDNumber(3);
-    timeCountLCD->display(0);
     timeCountLCD->setFixedSize(40, 40);
     timeCountLCD->setSegmentStyle(QLCDNumber::Flat);
     timeCountLCD->setContentsMargins(QMargins(0,0,0,4));
 
+    timer = new QTimer;
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateTimeCountLCD()));
+
+    resetGameBoard(mineCount);
 
     QPushButton *newGameButton = new QPushButton("New");
     newGameButton->setFixedSize(40, 40);
@@ -92,6 +85,7 @@ bool GameBoard::gameStarted()
 
 void GameBoard::clearBoard()
 {
+    gameOverState = true;
     timer->stop();
 
     for (int y = 0; y < maxY; y++) {
@@ -112,11 +106,8 @@ void GameBoard::decrementMineCounter(bool marked)
 
 void GameBoard::handleButtonClick()
 {
-    if (timer == NULL) {
-        timer = new QTimer;
-        connect(timer, SIGNAL(timeout()), this, SLOT(updateTimeCountLCD()));
+    if (!timer->isActive() && !gameOverState)
         timer->start(1000);
-    }
 
     for (int y = 0; y < maxY; y++) {
         for (int x = 0; x < maxX; x++) {
@@ -217,4 +208,34 @@ void GameBoard::connectAllNeighbors()
 GameButton *GameBoard::getGrid(int x, int y)
 {
     return grid[y * maxX + x];
+}
+
+void GameBoard::resetGameBoard(int mineCount)
+{
+    this->mineCount = mineCount;
+    gameOverState = false;
+
+    if (timer->isActive())
+        timer->stop();
+
+    timeCountLCD->display(0);
+    mineCountLCD->display(mineCount);
+
+    for (int y = 0; y < maxY; y++) {
+        for (int x = 0; x < maxX; x++) {
+            getGrid(x, y)->resetGameButton();
+        }
+    }
+
+    mineCount = std::min(mineCount, maxX*maxY);
+    srand(time(NULL));
+    for(int i = 0; i < mineCount; ) {
+        int x = rand() % maxX;
+        int y = rand() % maxY;
+        if (addMine(x, y)) {
+            i++;
+            incrementAdjacentNeighbors(x, y);
+        }
+    }
+
 }

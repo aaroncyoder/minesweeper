@@ -32,13 +32,20 @@ void MainWindow::startNewGame()
             }
         }
 
-        delete gameBoard;
+        if ((gameBoard->getMineHeight() != mineHeight) || (gameBoard->getMineWidth() != mineWidth)) {
+            delete gameBoard;
+            gameBoard = NULL;
+        }
+        else
+            gameBoard->resetGameBoard(mineCount);
+
     }
 
-    gameBoard = new GameBoard(mineWidth, mineHeight, mineCount, this);
-    setCentralWidget(gameBoard);
-
-    connect(gameBoard, SIGNAL(boardIsWinner()), this, SLOT(youWinDialog()));
+    if (gameBoard == NULL) {
+        gameBoard = new GameBoard(mineWidth, mineHeight, mineCount, this);
+        setCentralWidget(gameBoard);
+        connect(gameBoard, SIGNAL(boardIsWinner()), this, SLOT(youWinDialog()));
+    }
 }
 
 void MainWindow::youWinDialog()

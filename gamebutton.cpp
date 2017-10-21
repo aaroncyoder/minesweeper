@@ -66,6 +66,21 @@ void GameButton::gameOverState()
 
 }
 
+void GameButton::resetGameButton()
+{
+    gameOver = false;
+    flagged = false;
+    neighborMineCount = 0;
+    explodingMine = false;
+    this->setObjectName("startState");
+    this->setDisabled(false);
+    this->setText("");
+
+    style()->unpolish(this);
+    style()->polish(this);
+
+}
+
 void GameButton::handleRightClick()
 {
     if (gameOver) return;

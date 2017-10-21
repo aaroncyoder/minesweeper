@@ -12,6 +12,9 @@ class GameBoard : public QWidget
 public:
     explicit GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *parent = 0);
     bool gameStarted();
+    void resetGameBoard(int mineCount);
+    int getMineWidth() { return maxX; }
+    int getMineHeight() { return maxY; }
 
 signals:
     void boardIsWinner();
@@ -31,10 +34,12 @@ private:
     GameButton *getGrid(int x, int y);
     int maxX;
     int maxY;
+    int mineCount;
     static const int buttonSize = 20;
     QLCDNumber *mineCountLCD;
     QLCDNumber *timeCountLCD;
     QTimer *timer;
+    bool gameOverState;
 };
 
 #endif // GAMEBOARD_H

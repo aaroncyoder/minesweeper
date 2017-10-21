@@ -13,6 +13,8 @@ public:
     void incNeighborMineCount();
     bool unTouched();
     bool winningState();
+    void gameOverState();
+    void resetGameButton();
 
 signals:
     void rightClicked();
@@ -25,7 +27,6 @@ private slots:
 
 public slots:
     void handleLeftClick();
-    void gameOverState();
     void handleRightClick();
 
 private:
