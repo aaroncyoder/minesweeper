@@ -243,7 +243,7 @@ void GameBoard::animateButtons()
     int right = this->geometry().right();
     int bottom = this->geometry().bottom();
     int range = maxX * maxY;
-    const int maxAnimate = 100;
+    const int maxAnimate = 200;
 
     this->show();
 
