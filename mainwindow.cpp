@@ -46,6 +46,9 @@ void MainWindow::startNewGame()
         setCentralWidget(gameBoard);
         connect(gameBoard, SIGNAL(boardIsWinner()), this, SLOT(youWinDialog()));
     }
+
+    gameBoard->show();
+    gameBoard->animateButtons();
 }
 
 void MainWindow::youWinDialog()

@@ -14,7 +14,6 @@ GameBoard::GameBoard(int mineWidth, int mineHeight, int mineCount, QWidget *pare
     timer(NULL),
     gameOverState(false)
 {
-
     QFile file(":/resources/gameboardstyle.qss");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         setStyleSheet(file.readAll());
@@ -237,5 +236,30 @@ void GameBoard::resetGameBoard(int mineCount)
             incrementAdjacentNeighbors(x, y);
         }
     }
+}
 
+void GameBoard::animateButtons()
+{
+    int right = this->geometry().right();
+    int bottom = this->geometry().bottom();
+    int range = maxX * maxY;
+    const int maxAnimate = 100;
+
+    this->show();
+
+    srand(time(NULL));
+
+    for (int y = 0; y < maxY; y++) {
+        for (int x = 0; x < maxX; x++) {
+            if ((rand() % range) <= maxAnimate) {
+                GameButton *button = getGrid(x, y);
+
+                QPropertyAnimation *animation = new QPropertyAnimation(button, "geometry");
+                animation->setDuration(200 + rand() % 800);
+                animation->setStartValue(QRect(rand() % right, rand() % bottom, this->size().width(), this->size().height()));
+                animation->setEndValue(button->geometry());
+                animation->start();
+            }
+        }
+    }
 }

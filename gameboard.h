@@ -15,6 +15,7 @@ public:
     void resetGameBoard(int mineCount);
     int getMineWidth() { return maxX; }
     int getMineHeight() { return maxY; }
+    void animateButtons();
 
 signals:
     void boardIsWinner();
