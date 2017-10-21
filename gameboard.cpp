@@ -252,13 +252,9 @@ void GameBoard::animateButtons()
     for (int y = 0; y < maxY; y++) {
         for (int x = 0; x < maxX; x++) {
             if ((rand() % range) <= maxAnimate) {
-                GameButton *button = getGrid(x, y);
+                getGrid(x, y)->animateButton(rand() % right, rand() % bottom,
+                                             200 + rand() % 800);
 
-                QPropertyAnimation *animation = new QPropertyAnimation(button, "geometry");
-                animation->setDuration(200 + rand() % 800);
-                animation->setStartValue(QRect(rand() % right, rand() % bottom, this->size().width(), this->size().height()));
-                animation->setEndValue(button->geometry());
-                animation->start();
             }
         }
     }

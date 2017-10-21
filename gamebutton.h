@@ -3,6 +3,8 @@
 
 #include <QPushButton>
 
+class QPropertyAnimation;
+
 class GameButton : public QPushButton
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     bool winningState();
     void gameOverState();
     void resetGameButton();
+    void animateButton(int right, int bottom, int duration);
 
 signals:
     void rightClicked();
@@ -34,6 +37,7 @@ private:
     bool explodingMine;
     int neighborMineCount;
     bool gameOver;
+    QPropertyAnimation *animation;
 };
 
 #endif // GAMEBUTTON_H

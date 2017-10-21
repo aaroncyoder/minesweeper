@@ -9,6 +9,8 @@ GameButton::GameButton(QWidget *parent) :
     neighborMineCount(0),
     gameOver(false)
 {
+    animation = new QPropertyAnimation(this, "geometry");
+
     connect(this, SIGNAL(clicked()), this, SLOT(handleLeftClick()));
     connect(this, SIGNAL(rightClicked()), this, SLOT(handleRightClick()));
 }
@@ -79,6 +81,16 @@ void GameButton::resetGameButton()
     style()->unpolish(this);
     style()->polish(this);
 
+}
+
+void GameButton::animateButton(int right, int bottom, int duration)
+{
+    if (animation->state() == QAbstractAnimation::Stopped) {
+        animation->setDuration(duration);
+        animation->setStartValue(QRect(right, bottom, this->size().width(), this->size().height()));
+        animation->setEndValue(this->geometry());
+        animation->start();
+    }
 }
 
 void GameButton::handleRightClick()
